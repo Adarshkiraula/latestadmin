@@ -46,11 +46,11 @@ router.get('/userview',commonController.checkauth,commonController.userview);
  
 router.get('/subadminview',commonController.checkauth,commonController.subadminview);
 
-router.get('/modify/:id',commonController.checkauth,commonController.mod)
+router.get('/modify/:id',commonController.checkauth,commonController.checkType,commonController.mod)
 
-router.post('/update',commonController.checkauth,commonController.modify);
+router.post('/update',commonController.checkauth,commonController.checkType,commonController.modify);
 
-router.get('/delete/:id',commonController.checkauth,commonController.del)
+router.get('/delete/:id',commonController.checkauth,commonController.checkType,commonController.del)
 
 router.get('/logout',(req,res)=>{
   res.clearCookie('name').redirect('/');

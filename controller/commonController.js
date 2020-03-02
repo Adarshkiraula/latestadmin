@@ -10,8 +10,8 @@ var object_id;
 
 
  module.exports = {
-     login,registeruser,registersubadmin,checkauth,userview,subadminview,del,mod,modify
-     //register,checkType
+     login,registeruser,registersubadmin,checkauth,userview,subadminview,del,mod,modify,checkType
+     //register,
  }
  let transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -311,122 +311,14 @@ function subadminview(req, res) {
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    // function checkType(req, res, next) {
-    //     let type = req.type;
-    //     if (type == 'admin') {
-    //         next();
-    //     }
-    //     else {
-    //         msg = "Only Admin Is Authorized"
-    //          res.redirect('/');
-    //     }
+    function checkType(req, res, next) {
+        let type = req.type;
+        if (type == 'admin') {
+            next();
+        }
+        else {
+            msg = "Only Admin Is Authorized"
+             res.redirect('/');
+        }
     
-    // }
+    }
