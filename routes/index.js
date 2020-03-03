@@ -9,27 +9,21 @@ const commonController=require('../controller/commonController');
 //router.get('/', function(req, res, next) {
  // res.render('index.html');
 //});
-// router.get('/',commonController.admin);
-
-// router.post('/register',commonController.adminRegister);
-
-// router.post('/login',commonController.adminLogin);
-
 
 
 /* GET Route */
-router.get('/',commonController.checkauth,function(req,res){
+router.get('/',function(req,res){
   res.render('login.html');
 });
 
 
 
- router.get('/adduser',commonController.checkauth,function(req,res){
+ router.get('/adduser',commonController.checkauth,commonController.checkType,function(req,res){
   
   res.render('userregister.html');
  });
 
- router.get('/addsubadmin',commonController.checkauth,function(req,res){
+ router.get('/addsubadmin',commonController.checkauth,commonController.checkType,function(req,res){
   
   res.render('subadminregister.html');
 });
@@ -56,6 +50,11 @@ router.get('/logout',(req,res)=>{
   res.clearCookie('name').redirect('/');
 })
 
+
+router.get('/notauthorized',commonController.checkauth,(req,res)=>{
+  msg="not Authorized";
+  res.render('index.html',{msg})
+})
 
 
 module.exports = router;

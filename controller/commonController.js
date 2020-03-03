@@ -6,7 +6,6 @@ var generator = require('generate-password');
 
 //const sha1 = require('sha1');
 var msg = "";
-var object_id;
 
 
  module.exports = {
@@ -105,13 +104,17 @@ function login(req,res)
                     object_id=data.id;
                     role=data.role;
                     if(role=='admin'){
+                        msg="admin"
                         console.log(object_id);
-                        let token=generateToken(object_id);
+                        let token=generateToken(object_id,role);
                         console.log("Received Token",token);
-                        res.cookie('name',token).render('index.html');
+                        res.cookie('name',token).render('index.html',{msg});
                     }
                     else if(role=='subadmin'){
-                        res.json("subadmin");
+                        msg="subadmin"
+                        let token=generateToken(object_id,role);
+                        console.log("Received Token",token);
+                        res.cookie('name',token).render('index.html',{msg});
                     }
                     else{
                         res.json('user');
@@ -157,13 +160,9 @@ function registersubadmin(req,res)
         }
         else {
              msg = "Registered Succesfully"
-            //token
+           
             console.log(data)
-            object_id=data.id;
-             console.log(object_id);
-             let token=generateToken(object_id);
-             console.log("Received Token",token);
-             res.cookie('name',token);
+           
             //
              eMail(email,password);
             // console.log(data);
@@ -193,12 +192,7 @@ function registeruser(req, res) {
         }
         else {
              msg = "Registered Succesfully"
-             console.log(data)
-             object_id=data.id;
-             console.log(object_id);
-             let token=generateToken(object_id);
-             console.log("Received Token",token);
-             res.cookie('name',token);
+             
               
             // res.json("Registered");
            // console.log(data);
@@ -208,17 +202,17 @@ function registeruser(req, res) {
     })
 
 }
-function generateToken(value)
-{
+function generateToken(value,role)
+{   console.log(role)
     console.log("Generate Id received" +value)
-    let token=jwt.sign({'id':value},key.secret,{expiresIn: '5m'});
+    let token=jwt.sign({'id':value,'role':role},key.secret,{expiresIn: '5m'});
     return token;
 }
 function checkauth(req,res,next)
 {
     let token=req.cookies.name;
     console.log("Cookie"+token);
-    jwt.verify(token,key.secret,function(err)
+    jwt.verify(token,key.secret,function(err,data)
 {
     if(err)
     {
@@ -226,6 +220,8 @@ function checkauth(req,res,next)
         res.render('login.html');
     }
     else{
+        console.log(data.role);
+        req.type=data.role
         next();
     }
 })
@@ -313,12 +309,13 @@ function subadminview(req, res) {
 
     function checkType(req, res, next) {
         let type = req.type;
+        console.log("========================"+type)
         if (type == 'admin') {
             next();
         }
         else {
-            msg = "Only Admin Is Authorized"
-             res.redirect('/');
+            msg = "Only Admin Is Authorized";
+             res.redirect('/notauthorized');
         }
     
     }
