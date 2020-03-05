@@ -27,7 +27,7 @@ router.get('/',function(req,res){
   
   res.render('subadminregister.html');
 });
-//router.post('/register',commonController.register);
+// router.post('/register',commonController.register);
 router.post('/registeruser',commonController.checkauth,commonController.registeruser);
 
  router.post('/registersubadmin',commonController.checkauth,commonController.registersubadmin);
@@ -45,6 +45,27 @@ router.get('/modify/:id',commonController.checkauth,commonController.checkType,c
 router.post('/update',commonController.checkauth,commonController.checkType,commonController.modify);
 
 router.get('/delete/:id',commonController.checkauth,commonController.checkType,commonController.del)
+
+/////
+router.get('/forgotpassword',function(req,res)
+{
+  res.render('forgot.html');
+})
+
+router.post('/forgotsave',commonController.forgot,commonController.forgotsave);
+
+///
+router.get('/change/:id',commonController.checkauth,commonController.checkType,commonController.changepassword)
+
+router.post('/updatepassword',commonController.checkauth,commonController.checkType,commonController.updatepassword);
+
+
+///change passwd button index
+router.get('/adminchangepswd',function(req,res)
+{
+  res.render('changeadminpwd.html');
+})
+router.post('/adminsavepswd',commonController.password,commonController.passwordsave);
 
 router.get('/logout',(req,res)=>{
   res.clearCookie('name').redirect('/');

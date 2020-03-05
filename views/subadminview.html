@@ -98,9 +98,9 @@
 
     </ul>
     <!-- End of Sidebar -->
+   
 
-
-<body class="container mt-2 ml-1">
+<body >
  
   
   
@@ -153,7 +153,8 @@
                             name="id">Update</a>
                         <a class="ml-3" style="color: red" href="http://localhost:3000/delete/<%=juser[i]['_id'] %>"
                             name="id">Delete </a>
-
+                            <a class="ml-3" style="color: green" href="http://localhost:3000/change/<%=juser[i]['_id'] %>"
+                              name="id">Change Password </a>
                         <% } %>
 
                     </th>

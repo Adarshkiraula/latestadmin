@@ -3,14 +3,18 @@ const key =require('../key');
 const jwt =require('jsonwebtoken');
 const nodemailer = require("nodemailer");
 var generator = require('generate-password');
+const bcrypt = require('bcrypt');
+SALT_WORK_FACTOR = 10;
 
 //const sha1 = require('sha1');
 var msg = "";
 
 
  module.exports = {
-     login,registeruser,registersubadmin,checkauth,userview,subadminview,del,mod,modify,checkType
-     //register,
+     login,registeruser,registersubadmin,checkauth,
+     userview,subadminview,del,mod,modify,checkType,forgotsave,forgot,
+     changepassword,updatepassword,passwordsave,password
+    //  register
  }
  let transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -24,7 +28,7 @@ function eMail(email, password, req, res) {
 
     let mailOptions = {
         from: 'munjal.chirag.test@gmail.com',
-        to: 'abc@gmail.com',
+        to: 'adarshkirola5@gmail.com',
         subject: "Registration",
         html: "Thanking You For Registering Your Email: " + email + "  Password: " + password
     };
@@ -319,3 +323,117 @@ function subadminview(req, res) {
         }
     
     }
+
+function forgotsave(req,res){           //forgot password
+    let email = req.body.email;
+    console.log("@@@@@@@@@@@@@@"+email);
+    let newpass = req.newpass;
+    console.log("##########"+newpass);
+    let pass= req.pass;
+    console.log(pass);
+    model.findOneAndUpdate({'email':email }, { $set: { 'password': newpass} },(err)=>{
+        if(err){
+            console.log(err);
+        }else{
+            eMail(email,pass);
+            res.render('login.html');
+        }
+    })
+}
+
+
+
+
+
+
+
+function forgot(req, res, next) {            //forgot password
+    let password = generator.generate({
+        length: 10
+    })
+    console.log(password);
+    bcrypt.genSalt(SALT_WORK_FACTOR, function(err, salt) {
+        if (err) return next(err);
+       
+
+
+        bcrypt.hash(password, salt, function(err, hash) {
+            if (err) return next(err);
+            console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>'+hash);
+            newpass = hash;
+            req.newpass =newpass;
+            console.log(newpass);
+            req.pass = password;
+            next()
+        })
+    })
+}
+function changepassword(req,res)          //subadmin change password
+{
+    let id = req.params.id;
+    console.log("*******"+id);
+    model.findOne({'_id':id},(err,data)=>{
+        if(err){
+            console.log(err)
+        }
+        else{
+            
+            let name=data.name;
+            let password=data.password;
+            let email=data.email;
+            
+            let id=data.id;
+            
+            res.render('change.html',{name,email,password});
+        }
+    })
+}
+function updatepassword(req,res)               //subadmin changepassword
+{
+
+}
+function passwordsave(req,res)    //admin change password
+{
+    let email = req.body.email;
+    console.log("@@@@@@@@@@@@@@"+email);
+    let name=req.body.name;
+    console.log(name);
+    let newpass = req.newpass;
+    console.log("##########"+newpass);
+    let pass= req.pass;
+    console.log(pass);
+    model.findOneAndUpdate({'email':email }, { $set: { 'password': hash} },(err)=>{
+        if(err){
+            console.log(err);
+        }else{
+            eMail(email,pass);
+            res.render('login.html');
+        }
+    })
+
+}
+function password(req, res, next) {           //admin change password
+    let password =req.body.password;
+    console.log(password);
+    var user;
+    
+       
+    
+    bcrypt.genSalt(SALT_WORK_FACTOR, function (err, salt) {
+        if (err) return next(err);
+
+
+        bcrypt.hash(password, salt, function (err, hash) {
+            if (err) return next(err);
+            // newpass = hash;
+            // req.newpass =newpass;
+            
+            // req.pass = password;
+            // next();
+            
+                        // override the cleartext password with the hashed one
+                        newpass = hash;
+                        next();
+        })
+    })
+}
